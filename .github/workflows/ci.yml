@@ -1,0 +1,65 @@
+# CI Pipeline for Sales Data Transformations
+# This runs automatically when you push code to GitHub
+
+name: Test Data Transformations
+
+# WHEN should this run?
+on:
+  push:
+    branches: 
+      - dev      # Run when you push to dev branch
+      - main     # Run when you push to main branch
+  pull_request:
+    branches: 
+      - main     # Run when you create a pull request to main
+
+# WHAT should it do?
+jobs:
+  test:
+    name: Run PySpark Tests
+    runs-on: ubuntu-latest  # Use Ubuntu Linux computer
+    
+    steps:
+      # STEP 1: Get your code from GitHub
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      # STEP 2: Install Python
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      # STEP 3: Install Java (PySpark needs this)
+      - name: ☕ Set up Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      
+      # STEP 4: Install required Python packages
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyspark==3.5.0
+          pip install pytest==7.4.3
+          pip install pytest-spark==0.6.0
+      
+      # STEP 5: Run all tests
+      - name: 🧪 Run Tests
+        run: |
+          pytest tests/ -v --tb=short
+      
+      # STEP 6: Show summary
+      - name: ✅ Tests Complete
+        if: success()
+        run: echo "All tests passed! 🎉"
+      
+      - name: ❌ Tests Failed
+        if: failure()
+        run: echo "Tests failed! Please check the errors above."
+
+# What happens after this runs?
+# - If tests PASS (✅): You'll see a green checkmark in GitHub
+# - If tests FAIL (❌): You'll see a red X and get details about what broke
+# - You can see all results in the "Actions" tab of your GitHub repo
