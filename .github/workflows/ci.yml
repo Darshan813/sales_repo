@@ -48,7 +48,7 @@ jobs:
       # STEP 5: Run all tests
       - name: 🧪 Run Tests
         run: |
-          pytest tests/ -v --tb=short
+          pytest -v --tb=short
       
       # STEP 6: Show summary
       - name: ✅ Tests Complete
