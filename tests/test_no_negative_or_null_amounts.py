@@ -38,4 +38,4 @@ def test_no_negative_or_null_amounts(spark):
     
     # Assert that no invalid rows remain
     invalid_rows = cleaned_df.filter("total_amount <= 0 OR total_amount IS NULL").count()
-    assert invalid_rows == invalid_rows, "Test failed: Found rows with negative or null total_amount after cleaning."
+    assert invalid_rows == 0, "Test failed: Found rows with negative or null total_amount after cleaning."
